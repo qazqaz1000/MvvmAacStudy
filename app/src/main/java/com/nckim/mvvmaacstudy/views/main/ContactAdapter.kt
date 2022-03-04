@@ -12,7 +12,7 @@ import kotlinx.android.synthetic.main.contact_item.view.*
 
 class ContactAdapter (private val itemClick: (Contact) -> Unit,
     private val itemLongClick: (Contact) -> Unit)
-    : RecyclerView.Adapter<ContactAdapter.ViewHolder>() {
+    : RecyclerView.Adapter<ContactAdapter.ViewHolder>(), ItemTouchHelperListener {
     private var contacts : List<Contact> = listOf()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.contact_item, parent, false)
@@ -47,6 +47,24 @@ class ContactAdapter (private val itemClick: (Contact) -> Unit,
     fun setContacts(contacts : List<Contact>){
         this.contacts = contacts
         notifyDataSetChanged()
+    }
+
+    override fun onItemMove(fromPosition: Int, toPosition: Int): Boolean {
+        val contact = contacts[fromPosition]
+        val tempContacts = contacts.toMutableList()
+        tempContacts.removeAt(fromPosition)
+        tempContacts.add(toPosition, contact)
+        contacts = tempContacts.toList()
+        notifyItemMoved(fromPosition, toPosition)
+
+        return true
+    }
+
+    override fun onItemSwipe(position: Int) {
+        val tempContacts = contacts.toMutableList()
+        tempContacts.removeAt(position)
+        contacts = tempContacts.toList()
+        notifyItemRemoved(position)
     }
 
 }

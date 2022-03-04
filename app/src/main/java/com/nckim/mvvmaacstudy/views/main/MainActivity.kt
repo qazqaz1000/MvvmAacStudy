@@ -8,6 +8,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nckim.mvvmaacstudy.R
 import com.nckim.mvvmaacstudy.db.Contact
@@ -35,6 +36,9 @@ class MainActivity : AppCompatActivity() {
         contact_recycler.adapter = adapter
         contact_recycler.layoutManager = LinearLayoutManager(this)
 
+        val itemTouchHelperCallback = ItemTouchHelperCallback(adapter)
+        val itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
+        itemTouchHelper.attachToRecyclerView(contact_recycler)
 
         contactViewModel = ViewModelProvider(this).get(ContactViewModel::class.java)
         contactViewModel.getAll().observe(this, Observer { contacts ->
